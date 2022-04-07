@@ -1,0 +1,7 @@
+{
+  "name": "StreamingSearch",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
