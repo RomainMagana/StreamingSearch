@@ -78,6 +78,7 @@ const Tab1: React.FC = () => {
                     onIonInfinite={async () => await getAllSeries(`https://www.episodate.com/api/search?page=${series.page + 1}`)}
                     threshold="100px"
                     disabled={loadData}>
+
                     <IonInfiniteScrollContent loadingSpinner="bubbles" loadingText="Loading more data..."/>
                 </IonInfiniteScroll>
 
