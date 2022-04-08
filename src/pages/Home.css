@@ -1,0 +1,13 @@
+.series__card {
+    width: 100vw;
+  /*  height: 300px;*/
+}
+
+.series__image {
+    object-fit: cover;
+    height: 230px;
+}
+
+.series__title {
+    font-weight: bold;
+}
