@@ -58,7 +58,7 @@ const Home: React.FC = () => {
                 <IonList>
                     {series?.tv_shows.map((value) => {
                             return (
-                                    <IonItem key={value.id}>
+                                    <IonItem routerLink={'details/'+value.id} key={value.id}>
                                         <IonCard className={'ion-margin-bottom series__card'}>
                                             <IonCardContent className={'ion-no-padding'}>
                                                 <IonImg src={value.image_thumbnail_path} className={'series__image'}/>

@@ -12,7 +12,7 @@ import {
     IonToolbar, useIonViewWillEnter, withIonLifeCycle,
 } from '@ionic/react';
 import './Home.css';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {EpisodeDate} from "../api/results/EpisodeDate";
 import {heart, home} from "ionicons/icons";
 
@@ -60,8 +60,12 @@ const Search: React.FC = () => {
     }
 
     useIonViewWillEnter(async () => {
-        await getAllSeries('https://www.episodate.com/api/search?page=1');
+        await getAllSeries('https://www.episodate.com/api/search?q=&&page=1');
     });
+
+    function setText(clicked: string) {
+        return console.log(clicked);
+    }
 
     return (
         <IonPage>
@@ -74,7 +78,7 @@ const Search: React.FC = () => {
                 <IonList>
                     {series?.tv_shows.map((value) => {
                             return (
-                                <IonItem key={value.id}>
+                                <IonItem routerLink={'details/'+value.id} key={value.id}>
                                     <IonCard className={'ion-margin-bottom series__card'}>
                                         <IonCardContent className={'ion-no-padding'}>
                                             <IonImg src={value.image_thumbnail_path} className={'series__image'}/>
@@ -102,5 +106,7 @@ const Search: React.FC = () => {
         </IonPage>
     );
 };
+
+
 
 export default withIonLifeCycle(Search);
