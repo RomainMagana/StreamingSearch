@@ -11,16 +11,9 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import {
-  ellipse,
-  heart,
   heartOutline,
-  home,
   homeOutline,
-  list,
-  search,
   searchOutline,
-  square,
-  triangle
 } from 'ionicons/icons';
 import Home from './pages/Home';
 import Search from './pages/Search';
@@ -70,15 +63,15 @@ const App: React.FC = () => (
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton tab="home" href="/home">
-            <IonIcon icon={home} />
+            <IonIcon icon={homeOutline} />
             <IonLabel>Home</IonLabel>
           </IonTabButton>
           <IonTabButton tab="search" href="/search">
-            <IonIcon icon={search} />
+            <IonIcon icon={searchOutline} />
             <IonLabel>Search</IonLabel>
           </IonTabButton>
           <IonTabButton tab="favorite" href="/favorite">
-            <IonIcon icon={heart}/>
+            <IonIcon icon={heartOutline}/>
             <IonLabel>Favorite</IonLabel>
           </IonTabButton>
         </IonTabBar>

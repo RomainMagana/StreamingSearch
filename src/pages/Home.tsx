@@ -13,7 +13,8 @@ import {
 import './Home.css';
 import React, {useState} from "react";
 import {EpisodeDate} from "../api/results/EpisodeDate";
-import {heart, home} from "ionicons/icons";
+import getSeries from "../StorageServices/getSeries";
+import HeartComponents from "../components/HeartComponents";
 
 const Home: React.FC = () => {
     const [series, setSeries] = useState<EpisodeDate>({
@@ -23,19 +24,11 @@ const Home: React.FC = () => {
         tv_shows: [],
     });
     const [loadData, setLoadData] = useState(false);
-    const[searchText, setSearchText] = useState('');
 
     async function getAllSeries(url: string) {
         try {
             setLoadData(true);
-            const response = await fetch(url);
-            const data = await response.json();
-            let newSeries = {
-                page: data.page,
-                pages: data.pages,
-                total: data.total,
-                tv_shows: [...series.tv_shows, ...data.tv_shows],
-            };
+            const newSeries = await getSeries(url, series);
             setSeries(newSeries);
             setLoadData(false);
         } catch (e) {
@@ -57,19 +50,17 @@ const Home: React.FC = () => {
             <IonContent fullscreen>
                 <IonList>
                     {series?.tv_shows.map((value) => {
-                            return (
-                                    <IonItem routerLink={'details/'+value.id} key={value.id}>
-                                        <IonCard className={'ion-margin-bottom series__card'}>
-                                            <IonCardContent className={'ion-no-padding'}>
-                                                <IonImg src={value.image_thumbnail_path} className={'series__image'}/>
-                                                <IonItem>
-                                                    <IonLabel className={'series__title'} slot="start">{value.name}</IonLabel>
-                                                    <IonIcon icon={heart} style={{width:'25px', height:"25px"}} slot="end"/>
-                                                </IonItem>
-                                            </IonCardContent>
-                                        </IonCard>
+                        return(
+                            <IonCard routerLink={"details/" + value.permalink} key={value.id} className={"cardStyle"}>
+                                <IonImg src={value.image_thumbnail_path}/>
+                                <IonCardContent>
+                                    <IonItem key={value.id}>
+                                        <IonLabel slot={"start"} className={"labelStyle"}>{value.name}</IonLabel>
+                                        <HeartComponents value={value}/>
                                     </IonItem>
-                            )
+                                </IonCardContent>
+                            </IonCard>
+                        )
                         }
                     )}
                 </IonList>

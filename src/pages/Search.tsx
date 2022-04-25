@@ -1,20 +1,22 @@
 import './Search.css';
 import {
-    IonButton,
-    IonCard, IonCardContent, IonCardHeader,
-    IonCardTitle, IonCol,
+    IonCard, IonCardContent,
     IonContent,
     IonHeader, IonIcon, IonImg,
     IonInfiniteScroll,
     IonInfiniteScrollContent, IonItem, IonLabel, IonList,
-    IonPage, IonRow, IonSearchbar,
+    IonPage, IonRow, IonSearchbar, IonText,
     IonTitle,
     IonToolbar, useIonViewWillEnter, withIonLifeCycle,
 } from '@ionic/react';
 import './Home.css';
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {EpisodeDate} from "../api/results/EpisodeDate";
 import {heart, home} from "ionicons/icons";
+import getSeries from "../StorageServices/getSeries";
+import {Series} from "../api/response/Series";
+import {setOrRemoveFavorite} from "../StorageServices/favoriteServices";
+import HeartComponents from "../components/HeartComponents";
 
 const Search: React.FC = () => {
     const [series, setSeries] = useState<EpisodeDate>({
@@ -23,20 +25,14 @@ const Search: React.FC = () => {
         total: 0,
         tv_shows: [],
     });
+
     const [loadData, setLoadData] = useState(false);
-    const[searchText, setSearchText] = useState('');
+    const [searchText, setSearchText] = useState('');
 
     async function getAllSeries(url: string) {
         try {
             setLoadData(true);
-            const response = await fetch(url);
-            const data = await response.json();
-            let newSeries = {
-                page: data.page,
-                pages: data.pages,
-                total: data.total,
-                tv_shows: [...series.tv_shows, ...data.tv_shows],
-            };
+            const newSeries = await getSeries(url, series);
             setSeries(newSeries);
             setLoadData(false);
         } catch (e) {
@@ -50,7 +46,7 @@ const Search: React.FC = () => {
             setLoadData(true);
             const response = await fetch(`https://www.episodate.com/api/search?q=${search}`);
             const data = await response.json();
-            if(data.pages != 0) {
+            if (data.pages != 0) {
                 setSeries(data);
             }
             setLoadData(false);
@@ -63,28 +59,25 @@ const Search: React.FC = () => {
         await getAllSeries('https://www.episodate.com/api/search?q=&&page=1');
     });
 
-    function setText(clicked: string) {
-        return console.log(clicked);
-    }
-
     return (
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonSearchbar value={searchText} onIonChange={e => searchSeries(e.detail.value!)} placeholder="Search episode"/>
+                    <IonSearchbar value={searchText} onIonChange={e => searchSeries(e.detail.value!)}
+                                  placeholder="Search episode"/>
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
                 <IonList>
                     {series?.tv_shows.map((value) => {
                             return (
-                                <IonItem routerLink={'details/'+value.id} key={value.id}>
+                                <IonItem routerLink={'details/' + value.id} key={value.id} >
                                     <IonCard className={'ion-margin-bottom series__card'}>
                                         <IonCardContent className={'ion-no-padding'}>
                                             <IonImg src={value.image_thumbnail_path} className={'series__image'}/>
                                             <IonItem>
                                                 <IonLabel className={'series__title'} slot="start">{value.name}</IonLabel>
-                                                <IonIcon icon={heart} style={{width:'25px', height:"25px"}} slot="end"/>
+                                                <HeartComponents value={value}/>
                                             </IonItem>
                                         </IonCardContent>
                                     </IonCard>
@@ -96,7 +89,7 @@ const Search: React.FC = () => {
 
                 <IonInfiniteScroll
                     onIonInfinite={async () =>
-                        series.page < series.pages ? await getAllSeries(`https://www.episodate.com/api/search?q=${searchText}&page=${series.page + 1}`) : setLoadData(false) }
+                        series.page < series.pages ? await getAllSeries(`https://www.episodate.com/api/search?q=${searchText}&page=${series.page + 1}`) : setLoadData(false)}
                     threshold="100px"
                     disabled={loadData}>
                     <IonInfiniteScrollContent loadingSpinner="bubbles" loadingText="Loading more data..."/>
@@ -108,5 +101,4 @@ const Search: React.FC = () => {
 };
 
 
-
-export default withIonLifeCycle(Search);
+export default Search;

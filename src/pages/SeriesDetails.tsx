@@ -56,7 +56,6 @@ const SeriesDetails: React.FC<SeriesDetailsProps> = ({match}) => {
         return {__html: series.tvShow.description};
     }
 
-
     return (
         <IonPage>
             <IonHeader>
